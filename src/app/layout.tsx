@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import AuthProvider from "@/context/AuthProvider";
 import { Analytics } from "@vercel/analytics/next"
 import Header from "@/components/Common/Header";
+import Footer from "@/components/Common/Footer";
 
 
 const geistSans = Geist({
@@ -63,6 +64,7 @@ export default function RootLayout({
           {children}
           <Toaster position="bottom-right" />
         </body>
+        <Footer />
         <Analytics />
       </AuthProvider>
     </html>
