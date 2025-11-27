@@ -86,8 +86,20 @@ export default function StudentRegistrationForm() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-
+    defaultValues: {
+      fullName: '',
+      rollNumber: '',
+      semester: '',
+      email: '',
+      phone: '',
+      careerGoal: '',
+      skills: [],      // ✅ array
+      events: [],      // ✅ array
+      contacted: false,
+      suggestions: ''
+    }
   });
+
 
   const isContactedChecked = form.watch("contacted");
 
