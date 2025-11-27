@@ -1,0 +1,10 @@
+[
+  { "value": "1st_sem", "title": "1st Semester" },
+  { "value": "2nd_sem", "title": "2nd Semester" },
+  { "value": "3rd_sem", "title": "3rd Semester" },
+  { "value": "4th_sem", "title": "4th Semester" },
+  { "value": "5th_sem", "title": "5th Semester" },
+  { "value": "6th_sem", "title": "6th Semester" },
+  { "value": "7th_sem", "title": "7th Semester" },
+  { "value": "8th_sem", "title": "8th Semester" }
+]
