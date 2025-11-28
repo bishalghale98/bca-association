@@ -1,9 +1,7 @@
 'use client'
 
 import SignInForm from '@/components/Auth/SignInForm'
-import SocialLogin from '@/components/Auth/SocialLogin'
 import { MessageSquare } from 'lucide-react'
-import Link from 'next/link';
 
 const SignInPage = () => {
   return (

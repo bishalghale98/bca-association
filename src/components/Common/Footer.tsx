@@ -11,7 +11,7 @@ const Footer = () => {
                     {/* Brand Section */}
                     <div className="flex flex-col space-y-4">
                         <div className="flex items-center space-x-3">
-                            <div className=" h-8 bg-white rounded-lg flex items-center justify-center">
+                            <div className="h-8 bg-white rounded-lg flex items-center justify-center px-3">
                                 <span className="text-vercel-black font-bold text-sm">BCA Association</span>
                             </div>
                         </div>
@@ -28,7 +28,7 @@ const Footer = () => {
                                 <Link
                                     key={index}
                                     href={item.slug}
-                                    className="text-vercel-gray-400 hover:text-gray-700 transition-colors text-sm font-medium"
+                                    className="text-vercel-gray-400 hover:text-white transition-colors text-sm font-medium"
                                 >
                                     {item.title}
                                 </Link>
@@ -44,7 +44,7 @@ const Footer = () => {
                                 <Link
                                     key={item}
                                     href="#"
-                                    className="text-vercel-gray-400 hover:text-gray-700 transition-colors text-sm font-medium"
+                                    className="text-vercel-gray-400 hover:text-white transition-colors text-sm font-medium"
                                 >
                                     {item}
                                 </Link>
@@ -52,8 +52,39 @@ const Footer = () => {
                         </div>
                     </div>
 
-                    {/* Contact */}
+                    {/* Contact & Credit Section */}
+                    <div className="flex flex-col space-y-4">
+                        {/* <h4 className="text-white font-semibold text-sm uppercase tracking-wider">Connect</h4>
+                        <div className="flex flex-col space-y-3">
+                            <Link
+                                href="mailto:contact@bca.edu"
+                                className="text-vercel-gray-400 hover:text-white transition-colors text-sm font-medium"
+                            >
+                                contact@bca.edu
+                            </Link>
+                            <Link
+                                href="tel:+977-1-1234567"
+                                className="text-vercel-gray-400 hover:text-white transition-colors text-sm font-medium"
+                            >
+                                +977-1-1234567
+                            </Link>
+                        </div> */}
 
+                        {/* Developer Credit */}
+                        <div className="pt-4 mt-4  border-vercel-gray-800">
+                            <p className="text-vercel-gray-500 text-xs">
+                                Designed & Developed by{' '}
+                                <Link
+                                    href="https://bishalghale.vercel.app"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-vercel-gray-400 hover:text-white transition-colors font-medium underline underline-offset-2"
+                                >
+                                    Bishal Ghale
+                                </Link>
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Bottom Bar */}
@@ -73,7 +104,7 @@ const Footer = () => {
                                 <Link
                                     key={social.name}
                                     href={social.href}
-                                    className="text-vercel-gray-400 hover:text-gray-700 transition-colors text-sm font-medium"
+                                    className="text-vercel-gray-400 hover:text-white transition-colors text-sm font-medium"
                                 >
                                     {social.name}
                                 </Link>
