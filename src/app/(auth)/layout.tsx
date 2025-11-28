@@ -1,3 +1,4 @@
+import BottomNav from '@/components/Common/BottomNav'
 import Footer from '@/components/Common/Footer'
 import Header from '@/components/Common/Header'
 import type { Metadata } from 'next'
@@ -33,6 +34,8 @@ export default function Layout({
 				</div>
 
 			</main>
+
+			<BottomNav />
 
 			<Footer />
 

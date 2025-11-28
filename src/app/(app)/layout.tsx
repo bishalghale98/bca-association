@@ -1,3 +1,4 @@
+import BottomNav from '@/components/Common/BottomNav';
 import Footer from '@/components/Common/Footer';
 import Header from '@/components/Common/Header';
 import type { Metadata } from 'next'
@@ -45,6 +46,9 @@ export default function Layout({
 			<Header />
 
 			<main className={inter.className}>{children}</main>
+
+			<BottomNav />
+
 
 			<Footer />
 

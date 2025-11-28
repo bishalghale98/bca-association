@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 export default function SidebarHeader({ isCollapsed }: { isCollapsed: boolean }) {
     return (
@@ -8,8 +9,10 @@ export default function SidebarHeader({ isCollapsed }: { isCollapsed: boolean })
                         <span className="text-sm font-bold text-white">BCA</span>
                     </div>
                     <div>
-                        <p className="font-bold text-gray-900">BCA Association</p>
-                        <p className="text-xs text-gray-500">Tribhuvan University</p>
+                        <Link href={'/'}>
+                            <p className="font-bold text-gray-900">BCA Association</p>
+                            <p className="text-xs text-gray-500">Tribhuvan University</p>
+                        </Link>
                     </div>
                 </div>
             ) : (

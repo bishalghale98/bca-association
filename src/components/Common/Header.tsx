@@ -1,32 +1,44 @@
 'use client'
 
 import Link from "next/link"
-import { BookOpen, Menu, X } from "lucide-react"
-import { useState } from "react"
+import { BookOpen } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { JSX } from "react"
 
 export default function Header() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const { data: session, status } = useSession()
-  const pathname = usePathname()
+  const pathname = usePathname() || "/"
 
-  const isActive = (href: string) => {
-    if (href === "/") return pathname === "/"
-    return pathname?.startsWith(href)
-  }
-
-  const navItems = [
+  // Main nav items
+  const mainNavItems: { label: string; href: string }[] = [
     { label: "Home", href: "/" },
     { label: "Form", href: "/form" },
   ]
 
-  if (status === "authenticated") navItems.push({ label: "Dashboard", href: "/dashboard" })
-  else if (status === "unauthenticated") navItems.push({ label: "Sign In", href: "/sign-in" })
+  // Determine conditional nav item
+  let conditionalNavItem: { label: string; href: string } | null = null
+  if (status === "authenticated") {
+    conditionalNavItem = { label: "Dashboard", href: "/dashboard" }
+  } else if (status === "unauthenticated") {
+    conditionalNavItem = { label: "Sign In", href: "/sign-in" }
+  }
+
+  // Combine all nav items
+  const navItems = [...mainNavItems]
+  if (status === "loading") {
+    // Placeholder skeleton for conditional item
+    navItems.push({ label: "", href: "loading" })
+  } else if (conditionalNavItem) {
+    navItems.push(conditionalNavItem)
+  }
+
+  // Active check
+  const isActive = (href: string) => href === "/" ? pathname === "/" : pathname.startsWith(href)
 
   return (
-    <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40 shadow-sm sticky top-0 z-50">
+    <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40 shadow-sm sticky top-0 z-40">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -37,7 +49,7 @@ export default function Header() {
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-sm hover:shadow-md transition-shadow duration-200">
               <BookOpen className="w-5 h-5 text-primary-foreground" />
             </div>
-            <div className="hidden sm:block space-y-0.5">
+            <div className="sm:block space-y-0.5">
               <p className="font-semibold text-foreground leading-none tracking-tight">
                 BCA Association
               </p>
@@ -50,75 +62,29 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map(item => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "font-medium px-4 py-2 rounded-lg transition-colors duration-200",
-                  isActive(item.href)
-                    ? "bg-accent text-primary"
-                    : "text-foreground hover:text-primary hover:bg-accent/50 active:bg-accent"
-                )}
-              >
-                {item.label}
-              </Link>
+              item.href === "loading" ? (
+                // Skeleton placeholder for loading state
+                <div
+                  key={item.href}
+                  className="w-20 h-6 bg-gray-300 dark:bg-gray-600 rounded-md animate-pulse"
+                />
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "font-medium px-4 py-2 rounded-lg transition-colors duration-200",
+                    isActive(item.href)
+                      ? "bg-accent text-primary"
+                      : "text-foreground hover:text-primary hover:bg-accent/50 active:bg-accent"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              )
             ))}
           </nav>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-accent/50 transition-colors duration-200"
-            onClick={() => setIsMobileMenuOpen(true)}
-            aria-label="Toggle menu"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
         </div>
-      </div>
-
-      {/* Mobile Menu Overlay */}
-      <div
-        className={cn(
-          "fixed inset-0 z-40 bg-black/30 transition-opacity duration-300",
-          isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        )}
-        onClick={() => setIsMobileMenuOpen(false)}
-      />
-
-      {/* Mobile Menu Side Panel */}
-      <div
-        className={cn(
-          "fixed top-0 right-0 h-full w-64 bg-background shadow-lg z-50 transform transition-transform duration-300",
-          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-        )}
-      >
-        <div className="flex items-center justify-between p-4 border-b border-border/40">
-          <p className="font-semibold text-lg">Menu</p>
-          <button
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-accent/50 transition-colors duration-200"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        <nav className="flex flex-col p-4 space-y-2">
-          {navItems.map(item => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={cn(
-                "font-medium px-4 py-3 rounded-lg transition-colors duration-200",
-                isActive(item.href)
-                  ? "bg-accent text-primary"
-                  : "text-foreground hover:text-primary hover:bg-accent/50 active:bg-accent"
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
       </div>
     </header>
   )

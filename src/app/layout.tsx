@@ -5,8 +5,6 @@ import { Toaster } from "sonner";
 import AuthProvider from "@/context/AuthProvider";
 import { Analytics } from "@vercel/analytics/next"
 
-
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
