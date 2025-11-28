@@ -11,10 +11,9 @@ const Footer = () => {
                     {/* Brand Section */}
                     <div className="flex flex-col space-y-4">
                         <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                                <span className="text-vercel-black font-bold text-sm">BCA</span>
+                            <div className=" h-8 bg-white rounded-lg flex items-center justify-center">
+                                <span className="text-vercel-black font-bold text-sm">BCA Association</span>
                             </div>
-                            <span className="font-semibold text-white text-lg">BCA Association</span>
                         </div>
                         <p className="text-vercel-gray-400 text-sm leading-relaxed">
                             Empowering BCA students at Tribhuvan University with better resources, events, and career opportunities.

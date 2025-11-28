@@ -24,7 +24,7 @@ const SignInPage = () => {
       {/* Form */}
       <div className="px-8 pb-8 space-y-6">
         <SignInForm />
-        <div className="relative my-6">
+        {/* <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300 dark:border-gray-600" />
           </div>
@@ -32,7 +32,6 @@ const SignInPage = () => {
             <span className="bg-white dark:bg-gray-800 px-3 text-gray-500 dark:text-gray-400">Or continue with</span>
           </div>
         </div>
-        <SocialLogin />
 
         <div className="text-center mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
           <p className="text-gray-600 dark:text-gray-400 text-sm">
@@ -44,7 +43,7 @@ const SignInPage = () => {
               Sign up
             </Link>
           </p>
-        </div>
+        </div> */}
       </div>
 
     </>

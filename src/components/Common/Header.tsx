@@ -44,10 +44,10 @@ export default function Header() {
               Form
             </Link>
             <Link
-              href="/admin/dashboard"
+              href="/sign-in"
               className="text-foreground hover:text-primary font-medium transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-accent/50 active:bg-accent"
             >
-              Admin
+              Sign In
             </Link>
           </nav>
 
