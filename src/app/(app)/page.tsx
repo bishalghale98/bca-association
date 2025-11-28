@@ -41,12 +41,7 @@ const Home = () => {
                             </svg>
                         </Link>
 
-                        <Link
-                            href="/admin"
-                            className="border border-slate-300 text-slate-700 px-8 py-4 rounded-xl font-semibold hover:border-slate-400 transition-all hover:bg-white/50 active:scale-95"
-                        >
-                            Admin Login
-                        </Link>
+
                     </div>
 
                     {/* Stats */}
