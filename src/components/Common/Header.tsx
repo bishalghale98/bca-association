@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { BookOpen, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { data: session } = useSession()
+
 
   return (
     <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40 shadow-sm sticky top-0 z-40">
@@ -43,12 +46,25 @@ export default function Header() {
             >
               Form
             </Link>
-            <Link
-              href="/sign-in"
-              className="text-foreground hover:text-primary font-medium transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-accent/50 active:bg-accent"
-            >
-              Sign In
-            </Link>
+
+            {session?.user ?
+              (
+                <Link
+                  href="/dashboard"
+                  className="text-foreground hover:text-primary font-medium transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-accent/50 active:bg-accent"
+                >
+                  Dashboard
+                </Link>
+              ) : (
+                <Link
+                  href="/sign-in"
+                  className="text-foreground hover:text-primary font-medium transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-accent/50 active:bg-accent"
+                >
+                  Sign In
+                </Link>
+              )
+            }
+
           </nav>
 
           {/* Mobile Menu Button */}
@@ -83,13 +99,31 @@ export default function Header() {
               >
                 Form
               </Link>
-              <Link
-                href="/admin/dashboard"
-                className="text-foreground hover:text-primary font-medium transition-colors duration-200 px-4 py-3 rounded-lg hover:bg-accent/50 active:bg-accent"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Admin
-              </Link>
+
+              {
+                session?.user ?
+                  (
+                    <Link
+                      href="/dashboard"
+                      className="text-foreground hover:text-primary font-medium transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-accent/50 active:bg-accent"
+                      onClick={() => setIsMobileMenuOpen(false)}
+
+                    >
+                      Dashboard
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/sign-in"
+                      className="text-foreground hover:text-primary font-medium transition-colors duration-200 px-4 py-3 rounded-lg hover:bg-accent/50 active:bg-accent"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Sign In
+                    </Link>
+                  )
+              }
+
+
+
             </nav>
           </div>
         )}

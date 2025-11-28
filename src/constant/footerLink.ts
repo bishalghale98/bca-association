@@ -1,11 +1,11 @@
 export const footerLink = [
   {
     title: "Home",
-    slug: "home",
+    slug: "/",
   },
   {
     title: "Submit Form",
-    slug: "submit-form",
+    slug: "form",
   },
   {
     title: "About",

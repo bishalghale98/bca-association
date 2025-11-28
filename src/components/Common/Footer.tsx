@@ -11,7 +11,7 @@ const Footer = () => {
                     {/* Brand Section */}
                     <div className="flex flex-col space-y-4">
                         <div className="flex items-center space-x-3">
-                            <div className="h-8 bg-white rounded-lg flex items-center justify-center px-3">
+                            <div className="h-8 bg-white rounded-lg flex items-center justify-center ">
                                 <span className="text-vercel-black font-bold text-sm">BCA Association</span>
                             </div>
                         </div>

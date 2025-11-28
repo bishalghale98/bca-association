@@ -6,7 +6,10 @@ import { ROLE } from "@/types/User";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request, context: { params: { id: string } }) {
+export async function GET(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
   const { id } = await context.params;
 
   await dbConnect();

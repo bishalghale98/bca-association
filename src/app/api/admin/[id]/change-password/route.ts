@@ -5,9 +5,12 @@ import { ApiResponse } from "@/types/ApiResponse";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
-export async function PATCH(req: Request, context: { params: { id: string } }) {
+export async function PATCH(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
 
     await dbConnect();
 
