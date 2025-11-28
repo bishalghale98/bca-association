@@ -28,7 +28,7 @@ const Footer = () => {
                                 <Link
                                     key={index}
                                     href={item.slug}
-                                    className="text-vercel-gray-400 hover:text-white transition-colors text-sm font-medium"
+                                    className="text-vercel-gray-400 hover:text-gray-800 transition-colors text-sm font-medium"
                                 >
                                     {item.title}
                                 </Link>
@@ -44,7 +44,7 @@ const Footer = () => {
                                 <Link
                                     key={item}
                                     href="#"
-                                    className="text-vercel-gray-400 hover:text-white transition-colors text-sm font-medium"
+                                    className="text-vercel-gray-400 hover:text-gray-800 transition-colors text-sm font-medium"
                                 >
                                     {item}
                                 </Link>
@@ -58,13 +58,13 @@ const Footer = () => {
                         <div className="flex flex-col space-y-3">
                             <Link
                                 href="mailto:contact@bca.edu"
-                                className="text-vercel-gray-400 hover:text-white transition-colors text-sm font-medium"
+                                className="text-vercel-gray-400 hover:text-gray-800 transition-colors text-sm font-medium"
                             >
                                 contact@bca.edu
                             </Link>
                             <Link
                                 href="tel:+977-1-1234567"
-                                className="text-vercel-gray-400 hover:text-white transition-colors text-sm font-medium"
+                                className="text-vercel-gray-400 hover:text-gray-800 transition-colors text-sm font-medium"
                             >
                                 +977-1-1234567
                             </Link>
@@ -78,7 +78,7 @@ const Footer = () => {
                                     href="https://bishalghale.vercel.app"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-vercel-gray-400 hover:text-white transition-colors font-medium underline underline-offset-2"
+                                    className="text-vercel-gray-400 hover:text-gray-800 transition-colors font-medium underline underline-offset-2"
                                 >
                                     Bishal Ghale
                                 </Link>
@@ -104,7 +104,7 @@ const Footer = () => {
                                 <Link
                                     key={social.name}
                                     href={social.href}
-                                    className="text-vercel-gray-400 hover:text-white transition-colors text-sm font-medium"
+                                    className="text-vercel-gray-400 hover:text-gray-800 transition-colors text-sm font-medium"
                                 >
                                     {social.name}
                                 </Link>

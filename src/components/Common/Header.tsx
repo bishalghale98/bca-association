@@ -1,17 +1,32 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { BookOpen, Menu, X } from "lucide-react";
-import { useState } from "react";
-import { useSession } from "next-auth/react";
+import Link from "next/link"
+import { BookOpen, Menu, X } from "lucide-react"
+import { useState } from "react"
+import { useSession } from "next-auth/react"
+import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
 
 export default function Header() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { data: session } = useSession()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { data: session, status } = useSession()
+  const pathname = usePathname()
 
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/"
+    return pathname?.startsWith(href)
+  }
+
+  const navItems = [
+    { label: "Home", href: "/" },
+    { label: "Form", href: "/form" },
+  ]
+
+  if (status === "authenticated") navItems.push({ label: "Dashboard", href: "/dashboard" })
+  else if (status === "unauthenticated") navItems.push({ label: "Sign In", href: "/sign-in" })
 
   return (
-    <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40 shadow-sm sticky top-0 z-40">
+    <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40 shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -34,100 +49,77 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
-            <Link
-              href="/"
-              className="text-foreground hover:text-primary font-medium transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-accent/50 active:bg-accent"
-            >
-              Home
-            </Link>
-            <Link
-              href="/form"
-              className="text-foreground hover:text-primary font-medium transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-accent/50 active:bg-accent"
-            >
-              Form
-            </Link>
-
-            {session?.user ?
-              (
-                <Link
-                  href="/dashboard"
-                  className="text-foreground hover:text-primary font-medium transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-accent/50 active:bg-accent"
-                >
-                  Dashboard
-                </Link>
-              ) : (
-                <Link
-                  href="/sign-in"
-                  className="text-foreground hover:text-primary font-medium transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-accent/50 active:bg-accent"
-                >
-                  Sign In
-                </Link>
-              )
-            }
-
+            {navItems.map(item => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "font-medium px-4 py-2 rounded-lg transition-colors duration-200",
+                  isActive(item.href)
+                    ? "bg-accent text-primary"
+                    : "text-foreground hover:text-primary hover:bg-accent/50 active:bg-accent"
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
 
           {/* Mobile Menu Button */}
           <button
             className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-accent/50 transition-colors duration-200"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            onClick={() => setIsMobileMenuOpen(true)}
             aria-label="Toggle menu"
           >
-            {isMobileMenuOpen ? (
-              <X className="w-5 h-5" />
-            ) : (
-              <Menu className="w-5 h-5" />
-            )}
+            <Menu className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      <div
+        className={cn(
+          "fixed inset-0 z-40 bg-black/30 transition-opacity duration-300",
+          isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        )}
+        onClick={() => setIsMobileMenuOpen(false)}
+      />
+
+      {/* Mobile Menu Side Panel */}
+      <div
+        className={cn(
+          "fixed top-0 right-0 h-full w-64 bg-background shadow-lg z-50 transform transition-transform duration-300",
+          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        )}
+      >
+        <div className="flex items-center justify-between p-4 border-b border-border/40">
+          <p className="font-semibold text-lg">Menu</p>
+          <button
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-accent/50 transition-colors duration-200"
+          >
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-border/40 py-4 animate-in slide-in-from-top duration-200">
-            <nav className="flex flex-col space-y-2">
-              <Link
-                href="/"
-                className="text-foreground hover:text-primary font-medium transition-colors duration-200 px-4 py-3 rounded-lg hover:bg-accent/50 active:bg-accent"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Home
-              </Link>
-              <Link
-                href="/form"
-                className="text-foreground hover:text-primary font-medium transition-colors duration-200 px-4 py-3 rounded-lg hover:bg-accent/50 active:bg-accent"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Form
-              </Link>
-
-              {
-                session?.user ?
-                  (
-                    <Link
-                      href="/dashboard"
-                      className="text-foreground hover:text-primary font-medium transition-colors duration-200 px-4 py-2 rounded-lg hover:bg-accent/50 active:bg-accent"
-                      onClick={() => setIsMobileMenuOpen(false)}
-
-                    >
-                      Dashboard
-                    </Link>
-                  ) : (
-                    <Link
-                      href="/sign-in"
-                      className="text-foreground hover:text-primary font-medium transition-colors duration-200 px-4 py-3 rounded-lg hover:bg-accent/50 active:bg-accent"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      Sign In
-                    </Link>
-                  )
-              }
-
-
-
-            </nav>
-          </div>
-        )}
+        <nav className="flex flex-col p-4 space-y-2">
+          {navItems.map(item => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={cn(
+                "font-medium px-4 py-3 rounded-lg transition-colors duration-200",
+                isActive(item.href)
+                  ? "bg-accent text-primary"
+                  : "text-foreground hover:text-primary hover:bg-accent/50 active:bg-accent"
+              )}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
       </div>
     </header>
-  );
+  )
 }
