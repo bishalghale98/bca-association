@@ -35,7 +35,7 @@ const Page: React.FC = () => {
       <LogoutButton
         label="Sign Out"
         className="w-48"
-        redirectUrl="/login"
+        redirectUrl="/"
       />
     </div>
   )

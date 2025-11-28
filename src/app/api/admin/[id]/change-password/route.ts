@@ -5,7 +5,7 @@ import { ApiResponse } from "@/types/ApiResponse";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
-export async function PATCH(
+export async function PUT(
   req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
