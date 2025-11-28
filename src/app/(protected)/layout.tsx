@@ -1,40 +1,46 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+'use client'
 
-const inter = Inter({ subsets: ["latin"] });
+import { Header } from "@/components/protected/layout/AppHeader/Header";
+import Sidebar from "@/components/protected/layout/AppSidebar/Sidebar";
+import { useState } from "react";
 
-export const metadata: Metadata = {
-	title: {
-		default: "BCA Association Dashboard",
-		template: "%s | BCA Association",
-	},
-	description:
-		"A complete administration dashboard for managing BCA Association users, forms, authentication, and semester data.",
-	keywords: [
-		"BCA Association",
-		"Admin Dashboard",
-		"Next.js App Router",
-		"Student Management",
-		"College Election",
-	],
-	category: "Technology",
-	robots: {
-		index: false, // Dashboard pages should NOT be indexed
-		follow: false,
-	},
-	openGraph: {
-		title: "BCA Association Dashboard",
-		description:
-			"Secure admin dashboard for managing student and system data.",
-		type: "website",
-	},
+
+
+
+interface DashboardLayoutProps {
+	children: React.ReactNode;
+}
+
+export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+	const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+	const toggleSidebar = () => {
+		setIsSidebarCollapsed(!isSidebarCollapsed);
+	};
+
+	return (
+		<div className="flex h-screen bg-gray-50/50">
+			{/* Sidebar */}
+			<Sidebar
+				isCollapsed={isSidebarCollapsed}
+			/>
+
+			{/* Main Content */}
+			<div className="flex-1 flex flex-col min-w-0">
+				{/* Header */}
+				<Header
+					onSidebarToggle={toggleSidebar}
+					title="Dashboard"
+					breadcrumbs={[]}
+				/>
+
+				{/* Page Content */}
+				<main className="flex-1 overflow-auto p-6">
+					{children}
+				</main>
+			</div>
+		</div>
+	);
 };
 
-
-export default function Layout({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
-	return <main className={inter.className}>{children}</main>;
-}
+export default DashboardLayout;
