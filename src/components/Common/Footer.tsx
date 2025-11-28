@@ -1,4 +1,5 @@
 import { footerLink } from '@/constant/footerLink'
+import Link from 'next/link'
 import React from 'react'
 
 const Footer = () => {
@@ -25,13 +26,13 @@ const Footer = () => {
                         <h4 className="text-white font-semibold text-sm uppercase tracking-wider">Navigation</h4>
                         <div className="flex flex-col space-y-3">
                             {footerLink.map((item, index) => (
-                                <a
+                                <Link
                                     key={index}
                                     href={item.slug}
-                                    className="text-vercel-gray-400 hover:text-white transition-colors text-sm font-medium"
+                                    className="text-vercel-gray-400 hover:text-gray-700 transition-colors text-sm font-medium"
                                 >
                                     {item.title}
-                                </a>
+                                </Link>
                             ))}
                         </div>
                     </div>
@@ -41,13 +42,13 @@ const Footer = () => {
                         <h4 className="text-white font-semibold text-sm uppercase tracking-wider">Resources</h4>
                         <div className="flex flex-col space-y-3">
                             {['Documentation', 'Help Center', 'Privacy', 'Terms'].map((item) => (
-                                <a
+                                <Link
                                     key={item}
                                     href="#"
-                                    className="text-vercel-gray-400 hover:text-white transition-colors text-sm font-medium"
+                                    className="text-vercel-gray-400 hover:text-gray-700 transition-colors text-sm font-medium"
                                 >
                                     {item}
-                                </a>
+                                </Link>
                             ))}
                         </div>
                     </div>
@@ -70,13 +71,13 @@ const Footer = () => {
                                 { name: 'GitHub', href: '#' },
                                 { name: 'LinkedIn', href: '#' }
                             ].map((social) => (
-                                <a
+                                <Link
                                     key={social.name}
                                     href={social.href}
-                                    className="text-vercel-gray-400 hover:text-white transition-colors text-sm font-medium"
+                                    className="text-vercel-gray-400 hover:text-gray-700 transition-colors text-sm font-medium"
                                 >
                                     {social.name}
-                                </a>
+                                </Link>
                             ))}
                         </div>
                     </div>
