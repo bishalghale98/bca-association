@@ -28,7 +28,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Right Section */}
-            <HeaderQuickActions />
+            {/* <HeaderQuickActions /> */}
         </header>
     );
 };
