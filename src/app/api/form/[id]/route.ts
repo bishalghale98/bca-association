@@ -8,7 +8,6 @@ export async function GET(
   context: { params: Promise<{ id: string }> } // <- notice Promise here
 ) {
   try {
-    // 1️⃣ Check Authentication
     const { authorized, response } = await checkRole([
       ROLE.ADMIN,
       ROLE.SUPER_ADMIN,
@@ -16,7 +15,6 @@ export async function GET(
 
     if (!authorized) return response;
 
-    // Resolve the promised params
     const { id } = await context.params;
 
     if (!id) {

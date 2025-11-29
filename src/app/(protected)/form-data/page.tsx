@@ -35,7 +35,16 @@ type ApiResponse = {
 	success: boolean;
 	message: string;
 	data: FormData[];
+	meta?: Meta;
 };
+
+type Meta = {
+	page: number;
+	limit: number;
+	total: number;
+	totalPages: number;
+};
+
 
 export default function FormDataTablePage() {
 	const [formData, setFormData] = useState<FormData[]>([]);
@@ -86,7 +95,7 @@ export default function FormDataTablePage() {
 			form.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
 			form.email.toLowerCase().includes(searchTerm.toLowerCase());
 
-		
+
 
 		return matchesSearch;
 	});
@@ -153,8 +162,8 @@ export default function FormDataTablePage() {
 							/>
 						</div>
 
-					
-						
+
+
 					</div>
 				</div>
 
