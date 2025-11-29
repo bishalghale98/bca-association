@@ -1,10 +1,12 @@
 type PasswordResetEmailProps = {
   userEmail: string;
+  signInLink?: string;
   date?: Date;
 };
 
 export const PasswordResetEmail = ({
   userEmail,
+  signInLink = "#",
   date = new Date(),
 }: PasswordResetEmailProps) => {
   const formattedDate = date.toLocaleDateString("en-US", {
@@ -34,11 +36,10 @@ export const PasswordResetEmail = ({
       <p style="color: #666; font-size: 16px; line-height: 1.6; margin: 0 0 24px 0; text-align: center;">
         Your account password has been updated successfully. You can now use your new password to sign in.
       </p>
-
       ${SecurityConfirmationCard()}
       ${ActionTimeline()}
       ${SecurityTips()}
-      ${ActionButton()}
+      ${ActionButton(signInLink)}
       ${SupportInfo()}
     </div>
   `;
@@ -54,8 +55,7 @@ export const PasswordResetEmail = ({
         <h3 style="color: #065f46; font-size: 18px; font-weight: 600; margin: 0;">Security Confirmed</h3>
       </div>
       <p style="color: #065f46; font-size: 14px; line-height: 1.5; margin: 0;">
-        Your password has been securely updated and all previous sessions have been maintained. 
-        The reset token has been invalidated for your security.
+        Your password has been securely updated. Previous sessions remain active. The reset token has been invalidated for your security.
       </p>
     </div>
   `;
@@ -93,16 +93,16 @@ export const PasswordResetEmail = ({
           <h3 style="color: #ea580c; font-size: 16px; font-weight: 600; margin: 0 0 8px 0;">Security Tips</h3>
           <ul style="color: #ea580c; font-size: 14px; line-height: 1.5; margin: 0; padding-left: 16px;">
             <li>Use a strong, unique password</li>
-            <li>Avoid using the same password across multiple sites</li>
+            <li>Avoid reusing passwords across multiple sites</li>
           </ul>
         </div>
       </div>
     </div>
   `;
 
-  const ActionButton = () => `
+  const ActionButton = (link: string) => `
     <div style="text-align: center; margin: 32px 0;">
-      <a href="#" style="display: inline-flex; align-items: center; justify-content: center; 
+      <a href="${link}" style="display: inline-flex; align-items: center; justify-content: center; 
          background: #000; color: white; text-decoration: none; 
          padding: 14px 28px; border-radius: 8px; font-weight: 500; font-size: 15px; transition: all 0.2s ease; border: 1px solid #000;
          box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
@@ -120,7 +120,7 @@ export const PasswordResetEmail = ({
       <a href="mailto:support@yourapp.com" style="color: #667eea; text-decoration: none; font-weight: 500; font-size: 14px;">
         Contact Support Immediately →
       </a>
-      <p style="color: #999; font-size: 12px; margin: 8px 0 0 0;">This security notification was sent to ${userEmail}</p>
+      <p style="color: #999; font-size: 12px; margin: 8px 0 0 0;">This notification was sent to ${userEmail}</p>
       <p style="color: #999; font-size: 12px; margin: 0;">Password updated on ${formattedDate}</p>
     </div>
   `;

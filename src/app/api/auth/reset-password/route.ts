@@ -38,10 +38,15 @@ export async function POST(req: Request) {
 
     await ResetToken.deleteOne({ token });
 
+    const signInLink = `${process.env.NEXT_PUBLIC_APP_URL}/sign-in`;
+
     await sendMail({
       to: user?.email as string,
       subject: "Password Updated Successfully",
-      html: PasswordResetEmail({ userEmail: user?.email as string }),
+      html: PasswordResetEmail({
+        userEmail: user?.email as string,
+        signInLink,
+      }),
     });
 
     return NextResponse.json({
