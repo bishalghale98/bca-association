@@ -1,56 +1,59 @@
 import dbConnect from "@/lib/dbConnect";
+import { validateSchema } from "@/lib/helper/validateSchema";
 import User from "@/models/User";
-import { RegisterSchema } from "@/schemas/UserSchema";
+import { AddUserBySuperAdmin } from "@/schemas/UserSchema";
 import { ApiResponse } from "@/types/ApiResponse";
 import { ROLE } from "@/types/User";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
+import { welcomeEmailTemplate } from "@/lib/emailTemplates/welcomeEmail";
+import { requireRole } from "@/lib/auth/checkRole";
+import { sendMail } from "../../../../../../sendMail/sendMail";
 
-export async function GET(
+export async function POST(
   req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params;
-
   await dbConnect();
 
-  const reqUser = await User.findById(id);
+  const { id } = await context.params;
 
-  if (!reqUser) {
-    return NextResponse.json(
-      {
-        message: "User not found",
-      },
-      { status: 404 }
-    );
-  }
+  const reqUser = await User.findById(id).select("+password");
 
-  if (reqUser.role !== ROLE.SUPER_ADMIN) {
-    return NextResponse.json(
-      {
-        message: "You donot have access to add the users",
-      },
-      { status: 403 }
-    );
-  }
+  const roleCheck = requireRole(reqUser, [ROLE.SUPER_ADMIN]);
+  if (roleCheck) return roleCheck;
 
   const body = await req.json();
 
-  const parsed = RegisterSchema.safeParse(body);
-
-  if (!parsed.success) {
-    const flattenedErrors = parsed.error.flatten();
-    return NextResponse.json<ApiResponse>(
+  const validation = validateSchema(AddUserBySuperAdmin, body);
+  if (!validation.success) {
+    return NextResponse.json(
       {
         success: false,
         message: "Validation failed",
-        errors: flattenedErrors.fieldErrors,
+        errors: validation.errors,
       },
       { status: 400 }
     );
   }
 
-  const { name, email, password } = parsed.data;
+  const { name, email, password, reqUserPassword } = validation.data!;
+
+  if (!reqUser || !reqUser.password) {
+    return NextResponse.json(
+      { success: false, message: "Super admin not found" },
+      { status: 404 }
+    );
+  }
+
+  const isMatch = await bcrypt.compare(reqUserPassword, reqUser?.password);
+
+  if (!isMatch) {
+    return NextResponse.json({
+      success: false,
+      message: "Your password is incorrect",
+    });
+  }
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
@@ -65,11 +68,17 @@ export async function GET(
 
   const passwordHash = await bcrypt.hash(password, 10);
 
-  await User.create({
+  const user = await User.create({
     name,
     email,
     password: passwordHash,
-    role: ROLE.USER,
+    role: ROLE.ADMIN,
+  });
+
+  await sendMail({
+    to: user.email,
+    subject: "Welcome! Your Account Has Been Created Successfully",
+    html: welcomeEmailTemplate(user, password),
   });
 
   return NextResponse.json<ApiResponse>(
@@ -79,10 +88,4 @@ export async function GET(
     },
     { status: 201 }
   );
-
-  return NextResponse.json({
-    message: "User fetched",
-    userId: id,
-    role: reqUser.role, // ✅ now accessible
-  });
 }

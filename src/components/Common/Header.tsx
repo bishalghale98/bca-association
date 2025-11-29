@@ -38,7 +38,7 @@ export default function Header() {
   const isActive = (href: string) => href === "/" ? pathname === "/" : pathname.startsWith(href)
 
   return (
-    <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40 shadow-sm sticky top-0 z-40">
+    <header className="bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 border-b border-border/40 shadow-sm sticky top-0 z-40">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -75,7 +75,7 @@ export default function Header() {
                   className={cn(
                     "font-medium px-4 py-2 rounded-lg transition-colors duration-200",
                     isActive(item.href)
-                      ? "bg-accent text-primary"
+                      ? "bg-accent text-blue-600 dark:text-blue-400"
                       : "text-foreground hover:text-primary hover:bg-accent/50 active:bg-accent"
                   )}
                 >

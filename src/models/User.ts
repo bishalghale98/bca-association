@@ -1,5 +1,5 @@
 import { IUser, ROLE } from "@/types/User";
-import {  model, models, Schema } from "mongoose";
+import { Model, model, models, Schema } from "mongoose";
 
 const UserSchema: Schema<IUser> = new Schema(
   {
@@ -30,4 +30,5 @@ const UserSchema: Schema<IUser> = new Schema(
   { timestamps: true }
 );
 
-export default models.User || model<IUser>("User", UserSchema);
+export default (models.User as Model<IUser>) ||
+  model<IUser>("User", UserSchema);

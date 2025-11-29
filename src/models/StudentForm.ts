@@ -1,4 +1,4 @@
-import { Document, model, models, Schema } from "mongoose";
+import { Document, Model, model, models, Schema } from "mongoose";
 
 export interface IStudentForm extends Document {
   fullName: string;
@@ -63,5 +63,5 @@ const StudentFormSchema: Schema<IStudentForm> = new Schema({
   },
 });
 
-export default models.StudentForm ||
+export default (models.StudentForm as Model<IStudentForm>) ||
   model<IStudentForm>("StudentForm", StudentFormSchema);

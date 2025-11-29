@@ -105,15 +105,15 @@ export default function StudentRegistrationForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-linear-to-brr from-slate-50 via-blue-50 to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Enhanced Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl shadow-lg mb-6">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-br from-blue-500 to-purple-600 rounded-3xl shadow-lg mb-6">
             <GraduationCap className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-            BCA Association 
+          <h1 className="text-4xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+            BCA Association
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Join our vibrant community of future tech leaders. Shape your career path with us.
@@ -124,7 +124,7 @@ export default function StudentRegistrationForm() {
         <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/60 overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12">
             {/* Sidebar Progress */}
-            <div className="lg:col-span-4 bg-gradient-to-b from-blue-600 to-purple-700 p-8 text-white">
+            <div className="lg:col-span-4 bg-linear-to-b from-blue-600 to-purple-700 p-8 text-white">
               <div className="space-y-8">
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center justify-center w-8 h-8 bg-white/20 rounded-full">
