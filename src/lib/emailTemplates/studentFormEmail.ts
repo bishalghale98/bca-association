@@ -68,7 +68,7 @@ export const studentFormEmailTemplate = (saved: IStudentForm) => {
         ? `
           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
             ${saved.skills
-              .reduce((rows, skill, index) => {
+              .reduce<string[][]>((rows, skill, index) => {
                 if (index % 3 === 0) rows.push([]);
                 rows[rows.length - 1].push(skill);
                 return rows;
@@ -121,7 +121,7 @@ export const studentFormEmailTemplate = (saved: IStudentForm) => {
         ? `
           <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
             ${saved.events
-              .reduce((rows, event, index) => {
+              .reduce<string[][]>((rows, event, index) => {
                 if (index % 3 === 0) rows.push([]);
                 rows[rows.length - 1].push(event);
                 return rows;
