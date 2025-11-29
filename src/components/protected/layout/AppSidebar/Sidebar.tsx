@@ -27,11 +27,17 @@ export default function Sidebar({
                     isCollapsed={isCollapsed}
                 />
 
-                <SidebarSection
-                    title="Resources"
-                    items={externalItems}
-                    isCollapsed={isCollapsed}
-                />
+                {externalItems.length > 0 &&
+
+                    <SidebarSection
+                        title="Resources"
+                        items={externalItems}
+                        isCollapsed={isCollapsed}
+                    />
+
+                }
+
+
             </nav>
 
             <SidebarUser isCollapsed={isCollapsed} />

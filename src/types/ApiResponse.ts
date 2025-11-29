@@ -3,5 +3,13 @@ export type ApiResponse = {
   message: string;
   data?: any;
   id?: string;
-  errors?: any;
+  error?: any;
+  meta?: Meta;
+};
+
+type Meta = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
 };

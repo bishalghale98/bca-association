@@ -5,18 +5,17 @@ import { ChangePassword } from "@/schemas/UserSchema";
 import { ApiResponse } from "@/types/ApiResponse";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
-import { sendMail } from "../../../../../../sendMail/sendMail";
+import { sendMail } from "../../../../../sendMail/sendMail";
+import { getSessionUser } from "@/lib/auth/getSessionUser";
 
-export async function PUT(
-  req: Request,
-  context: { params: Promise<{ id: string }> }
-) {
+export async function PUT(req: Request) {
   try {
-    const { id } = await context.params;
+    const { authorized, response, session } = await getSessionUser();
+    if (!authorized) return response;
 
     await dbConnect();
 
-    const reqUser = await User.findById(id);
+    const reqUser = await User.findById(session?.user?._id);
     if (!reqUser) {
       return NextResponse.json<ApiResponse>(
         { success: false, message: "User not found" },
@@ -204,7 +203,7 @@ export async function PUT(
       {
         success: false,
         message: "Something went wrong",
-        errors: { server: [err.message] },
+        error: { server: [err.message] },
       },
       { status: 500 }
     );

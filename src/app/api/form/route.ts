@@ -7,20 +7,48 @@ import { NextRequest, NextResponse } from "next/server";
 import { sendMail } from "../../../../sendMail/sendMail";
 import { studentFormEmailTemplate } from "@/lib/emailTemplates/studentFormEmail";
 import { rateLimit } from "@/lib/rateLimit";
-
+import { checkRole } from "@/lib/auth/checkRole";
+import { ROLE } from "@/types/User";
 
 // get all form route
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    // 1️⃣ Role check
+    const { authorized, response } = await checkRole([
+      ROLE.ADMIN,
+      ROLE.SUPER_ADMIN,
+    ]);
+    if (!authorized) return response;
+
     await dbConnect();
 
-    const data = await StudentForm.find().sort({ createdAt: -1 }).lean();
+    // 2️⃣ Get query params for pagination
+    const url = new URL(req.url);
+    const page = parseInt(url.searchParams.get("page") || "1", 10); // default page 1
+    const limit = parseInt(url.searchParams.get("limit") || "10", 10); // default 10 items per page
+    const skip = (page - 1) * limit;
+
+    // 3️⃣ Fetch data with pagination
+    const total = await StudentForm.countDocuments();
+    const data = await StudentForm.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const totalPages = Math.ceil(total / limit);
 
     return NextResponse.json<ApiResponse>(
       {
         success: true,
         message: "Forms fetched successfully",
         data,
+        meta: {
+          page,
+          limit,
+          total,
+          totalPages,
+        },
       },
       { status: 200 }
     );
@@ -37,13 +65,10 @@ export async function GET() {
   }
 }
 
-
-
-
 // Post route
 export async function POST(req: NextRequest) {
   try {
-    const headers = rateLimit.checkNext(req, 10); // 1 requests per minute per IP
+    const headers = rateLimit.checkNext(req, 10); // 10 requests per minute per IP
     if (headers.get("x-ratelimit-remaining") === "0") {
       return NextResponse.json(
         { success: false, message: "Too many requests. Try again later." },

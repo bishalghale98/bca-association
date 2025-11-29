@@ -43,23 +43,40 @@ export default function FormDataTablePage() {
 	const [error, setError] = useState<string | null>(null);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filterContacted, setFilterContacted] = useState<"all" | "contacted" | "not-contacted">("all");
+	const [page, setPage] = useState(1);
+	const [limit] = useState(10); // Number of items per page
+	const [hasMore, setHasMore] = useState(true);
+
 	const router = useRouter();
 
-	useEffect(() => {
-		const fetchFormData = async () => {
-			setLoading(true);
-			setError(null);
-			try {
-				const res = await axios.get<ApiResponse>("/api/form");
-				setFormData(res.data.data);
-			} catch (err: any) {
-				setError(err.message || "Failed to fetch data");
-			} finally {
-				setLoading(false);
-			}
-		};
+	const fetchFormData = async (nextPage = 1) => {
+		setLoading(true);
+		setError(null);
+		try {
+			const res = await axios.get<ApiResponse>(`/api/form?page=${nextPage}&limit=${limit}`);
 
-		fetchFormData();
+			if (nextPage === 1) {
+				setFormData(res.data.data);
+			} else {
+				setFormData(prev => [...prev, ...res.data.data]);
+			}
+
+			// Check if there are more pages
+			if (res.data.meta && nextPage >= res.data.meta.totalPages) {
+				setHasMore(false);
+			} else {
+				setHasMore(true);
+			}
+
+		} catch (err: any) {
+			setError(err.message || "Failed to fetch data");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	useEffect(() => {
+		fetchFormData(1); // initial load
 	}, []);
 
 	// Filter data based on search and filter
@@ -69,19 +86,21 @@ export default function FormDataTablePage() {
 			form.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
 			form.email.toLowerCase().includes(searchTerm.toLowerCase());
 
-		const matchesFilter =
-			filterContacted === "all" ||
-			(filterContacted === "contacted" && form.contacted) ||
-			(filterContacted === "not-contacted" && !form.contacted);
+		
 
-		return matchesSearch && matchesFilter;
+		return matchesSearch;
 	});
 
 	const handleViewDetails = (id: string) => {
 		router.push(`/form-data/${id}`);
 	};
 
-	if (loading) return (
+	const handleLoadMore = () => {
+		const nextPage = page + 1;
+		fetchFormData(nextPage);
+		setPage(nextPage);
+	};
+	if (loading && page === 1) return (
 		<div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
 			<div className="text-center space-y-4">
 				<Loader2 className="w-8 h-8 animate-spin text-gray-600 dark:text-gray-400 mx-auto" />
@@ -134,19 +153,8 @@ export default function FormDataTablePage() {
 							/>
 						</div>
 
-						{/* Filter */}
-						<div className="flex items-center space-x-3">
-							<Filter className="w-4 h-4 text-gray-400 shrink-0" />
-							<select
-								value={filterContacted}
-								onChange={(e) => setFilterContacted(e.target.value as any)}
-								className="flex-1 sm:w-auto px-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
-							>
-								<option value="all">All Contacts</option>
-								<option value="contacted">Contact OK</option>
-								<option value="not-contacted">Do Not Contact</option>
-							</select>
-						</div>
+					
+						
 					</div>
 				</div>
 
@@ -269,6 +277,19 @@ export default function FormDataTablePage() {
 								</div>
 							</div>
 						)}
+					</div>
+				)}
+
+
+				{hasMore && (
+					<div className="flex justify-center mt-6">
+						<button
+							onClick={handleLoadMore}
+							className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+							disabled={loading}
+						>
+							{loading ? "Loading..." : "Show More"}
+						</button>
 					</div>
 				)}
 			</div>
