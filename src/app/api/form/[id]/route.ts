@@ -5,43 +5,33 @@ import { checkRole } from "@/lib/auth/checkRole";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> } // <- notice Promise here
 ) {
   try {
-    // -----------------------------
     // 1️⃣ Check Authentication
-    // -----------------------------
-    // 1️⃣ Check Role
     const { authorized, response } = await checkRole([
       ROLE.ADMIN,
       ROLE.SUPER_ADMIN,
     ]);
 
-    if (!authorized) return response; // immediately block access
+    if (!authorized) return response;
 
-    const { id } = params;
+    // Resolve the promised params
+    const { id } = await context.params;
 
     if (!id) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "ID is missing in the URL",
-        },
+        { success: false, message: "ID is missing in the URL" },
         { status: 400 }
       );
     }
 
-    // -----------------------------
     // 2️⃣ Find Form by ID
-    // -----------------------------
     const form = await StudentForm.findById(id);
 
     if (!form) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "Form not found",
-        },
+        { success: false, message: "Form not found" },
         { status: 404 }
       );
     }
