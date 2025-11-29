@@ -6,11 +6,12 @@ export async function proxy(request: NextRequest) {
   const token = await getToken({ req: request });
   const url = request.nextUrl;
 
-  if (token && url.pathname.startsWith("/sign-in")) {
+  if (token && (url.pathname === "/sign-in" || url.pathname === "/sign-up")) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  if (!token && url.pathname.startsWith("/dashboard")) {
+  const protectedPaths = ["/dashboard", "/form-data"];
+  if (!token && protectedPaths.some((path) => url.pathname.startsWith(path))) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
@@ -18,5 +19,11 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/sign-in", "/sign-up", "/verify/:path*", "/"],
+  matcher: [
+    "/dashboard/:path*",
+    "/sign-in",
+    "/sign-up",
+    "/verify/:path*",
+    "/form-data",
+  ],
 };

@@ -9,11 +9,32 @@ import {
 } from "lucide-react";
 
 export const mainItems = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutGrid },
-  { label: "Students", href: "/students", icon: Users, badge: 24 },
-  { label: "Events", href: "/events", icon: Calendar },
-  { label: "Documents", href: "/documents", icon: FileText },
-  { label: "Settings", href: "/settings", icon: Settings },
+  {
+    label: "Dashboard",
+    href: "/dashboard",
+    icon: LayoutGrid,
+  },
+  {
+    label: "Form data",
+    href: "/form-data",
+    icon: Users,
+    badge: 24,
+  },
+  {
+    label: "Events",
+    href: "/events",
+    icon: Calendar,
+  },
+  {
+    label: "Documents",
+    href: "/documents",
+    icon: FileText,
+  },
+  {
+    label: "Settings",
+    href: "/settings",
+    icon: Settings,
+  },
 ];
 
 export const externalItems = [

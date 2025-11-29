@@ -8,6 +8,8 @@ import { sendMail } from "../../../../sendMail/sendMail";
 import { studentFormEmailTemplate } from "@/lib/emailTemplates/studentFormEmail";
 import { rateLimit } from "@/lib/rateLimit";
 
+
+// get all form route
 export async function GET() {
   try {
     await dbConnect();
@@ -34,6 +36,11 @@ export async function GET() {
     );
   }
 }
+
+
+
+
+// Post route
 export async function POST(req: NextRequest) {
   try {
     const headers = rateLimit.checkNext(req, 10); // 1 requests per minute per IP
