@@ -26,9 +26,10 @@ import {
     Calendar,
     Globe,
     MessageSquare,
-    Lightbulb
+    Lightbulb,
+    ArrowLeft
 } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 type FormData = {
     _id: string;
@@ -48,6 +49,7 @@ type FormData = {
 
 export default function FormDetailPage() {
     const params = useParams()
+    const router = useRouter();
     const { id } = params;
 
     const [data, setData] = useState<FormData | null>(null);
@@ -71,14 +73,30 @@ export default function FormDetailPage() {
         fetchFormDetail();
     }, [id]);
 
+    const handleBack = () => {
+        router.back();
+    };
+
     // Loading State
     if (loading) {
         return (
             <div className="container max-w-4xl py-8">
                 <Card>
                     <CardHeader className="pb-4">
-                        <Skeleton className="h-8 w-64" />
-                        <Skeleton className="h-4 w-48" />
+                        <div className="flex items-center gap-4">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={handleBack}
+                                className="h-8 w-8 p-0"
+                            >
+                                <ArrowLeft className="h-4 w-4" />
+                            </Button>
+                            <div>
+                                <Skeleton className="h-8 w-64" />
+                                <Skeleton className="h-4 w-48 mt-2" />
+                            </div>
+                        </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         {Array.from({ length: 8 }).map((_, index) => (
@@ -101,15 +119,24 @@ export default function FormDetailPage() {
                     <AlertTitle>Error</AlertTitle>
                     <AlertDescription className="flex items-center justify-between">
                         <span>{error}</span>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={fetchFormDetail}
-                            className="ml-4"
-                        >
-                            <RefreshCw className="h-4 w-4 mr-2" />
-                            Retry
-                        </Button>
+                        <div className="flex gap-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={handleBack}
+                            >
+                                <ArrowLeft className="h-4 w-4 mr-2" />
+                                Back
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={fetchFormDetail}
+                            >
+                                <RefreshCw className="h-4 w-4 mr-2" />
+                                Retry
+                            </Button>
+                        </div>
                     </AlertDescription>
                 </Alert>
             </div>
@@ -122,8 +149,16 @@ export default function FormDetailPage() {
             <div className="container max-w-4xl py-8">
                 <Alert>
                     <AlertTitle>No data found</AlertTitle>
-                    <AlertDescription>
-                        No form data found for the specified ID.
+                    <AlertDescription className="flex items-center justify-between">
+                        <span>No form data found for the specified ID.</span>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleBack}
+                        >
+                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            Back
+                        </Button>
                     </AlertDescription>
                 </Alert>
             </div>
@@ -133,11 +168,34 @@ export default function FormDetailPage() {
     return (
         <div className="container max-w-4xl py-8">
             <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-                    <div>
-                        <CardTitle className="text-2xl font-bold">Student Registration Details</CardTitle>
-                        <CardDescription>ID: {data._id.slice(0, 6)}...</CardDescription>
+                <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0 pb-4">
+                    {/* Left side */}
+                    <div className="flex items-center gap-4 flex-wrap">
+                        {/* Back button */}
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleBack}
+                            className="h-8 w-8 p-0"
+                        >
+                            <ArrowLeft className="h-4 w-4" />
+                            <span className="sr-only">Back</span>
+                        </Button>
+
+                        {/* Title + ID */}
+                        <div className="min-w-0">
+                            <CardTitle className="text-lg sm:text-xl md:text-2xl font-bold break-words">
+                                Student Form Detail
+                            </CardTitle>
+
+                            <CardDescription className="text-sm text-muted-foreground truncate sm:truncate-none">
+                                ID: {data._id.slice(0, 6)}...
+                            </CardDescription>
+                        </div>
+
                     </div>
+
+                    {/* Right side: Refresh button */}
                     <Button
                         variant="outline"
                         size="sm"
@@ -148,6 +206,7 @@ export default function FormDetailPage() {
                         <span className="sr-only">Refresh</span>
                     </Button>
                 </CardHeader>
+
 
                 <CardContent className="space-y-6">
                     {/* Personal Information Section */}
