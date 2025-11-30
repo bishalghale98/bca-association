@@ -5,7 +5,7 @@ import { checkRole } from "@/lib/auth/checkRole";
 
 export async function GET(
   req: Request,
-  context: { params: Promise<{ id: string }> } // <- notice Promise here
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const { authorized, response } = await checkRole([
@@ -24,7 +24,6 @@ export async function GET(
       );
     }
 
-    // 2️⃣ Find Form by ID
     const form = await StudentForm.findById(id);
 
     if (!form) {

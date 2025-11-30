@@ -1,8 +1,8 @@
 'use client';
 
 import axios from "axios";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import {
 	Loader2,
 	User,
@@ -14,6 +14,7 @@ import {
 	Filter,
 	Phone,
 } from "lucide-react";
+import { ApiResponse } from "@/types/ApiResponse";
 
 type FormData = {
 	_id: string;
@@ -31,19 +32,19 @@ type FormData = {
 	createdAt: string;
 };
 
-type ApiResponse = {
-	success: boolean;
-	message: string;
-	data: FormData[];
-	meta?: Meta;
-};
+// type ApiResponse = {
+// 	success: boolean;
+// 	message: string;
+// 	data: any;
+// 	meta?: Meta;
+// };
 
-type Meta = {
-	page: number;
-	limit: number;
-	total: number;
-	totalPages: number;
-};
+// type Meta = {
+// 	page: number;
+// 	limit: number;
+// 	total: number;
+// 	totalPages: number;
+// };
 
 
 export default function FormDataTablePage() {
@@ -55,40 +56,52 @@ export default function FormDataTablePage() {
 	const [page, setPage] = useState(1);
 	const [limit] = useState(10); // Number of items per page
 	const [hasMore, setHasMore] = useState(true);
-
+	const pathname = usePathname()
 	const router = useRouter();
 
-	const fetchFormData = async (nextPage = 1) => {
-		setLoading(true);
-		setError(null);
-		try {
-			const res = await axios.get<ApiResponse>(`/api/form?page=${nextPage}&limit=${limit}`);
+	// -----------------------------
+	// Fetch Function (Optimized)
+	// -----------------------------
+	const fetchFormData = useCallback(
+		async (nextPage: number = 1) => {
+			try {
+				setLoading(true);
+				setError(null);
 
-			if (nextPage === 1) {
-				setFormData(res.data.data);
-			} else {
-				setFormData(prev => [...prev, ...res.data.data]);
+				const res = await axios.get<ApiResponse>(
+					`/api/form?page=${nextPage}&limit=${limit}`
+				);
+
+				const newData = res.data.data;
+
+				setFormData(prev =>
+					nextPage === 1 ? newData : [...prev, ...newData]
+				);
+
+				const { meta } = res.data;
+				setHasMore(meta ? nextPage < meta.totalPages : false);
+
+			} catch (err: any) {
+				setError(err?.message ?? "Failed to fetch data");
+			} finally {
+				setLoading(false);
 			}
+		},
+		[limit]
+	);
 
-			// Check if there are more pages
-			if (res.data.meta && nextPage >= res.data.meta.totalPages) {
-				setHasMore(false);
-			} else {
-				setHasMore(true);
-			}
 
-		} catch (err: any) {
-			setError(err.message || "Failed to fetch data");
-		} finally {
-			setLoading(false);
-		}
-	};
 
+	// -----------------------------
 	useEffect(() => {
-		fetchFormData(1); // initial load
-	}, []);
+		setFormData([]);
+		setHasMore(true);
 
-	// Filter data based on search and filter
+		fetchFormData(1);
+	}, [pathname, fetchFormData]);
+
+
+
 	const filteredData = formData.filter((form) => {
 		const matchesSearch =
 			form.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
