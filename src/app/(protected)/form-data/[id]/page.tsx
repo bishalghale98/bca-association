@@ -2,20 +2,9 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useParams, useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import {
-    RefreshCw,
     User,
     Mail,
     Phone,
@@ -27,10 +16,18 @@ import {
     Globe,
     MessageSquare,
     Lightbulb,
-    ArrowLeft
+    ArrowLeft,
 } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
-import { handleApiError } from "@/lib/helper/apiError";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { handleAxiosError } from "@/lib/helper/errorHandler";
+import LoadingState from "@/components/protected/form-details/LoadingState";
+import ErrorState from "@/components/protected/form-details/ErrorState";
+import EmptyState from "@/components/protected/form-details/EmptyState";
+import FormDetailCard from "@/components/protected/form-details/FormDetailCard";
+import FormDetailSection from '../../../../components/protected/form-details/FormDetailSection';
+import DetailField from "@/components/protected/form-details/DetailField";
+import FieldLabel from "@/components/protected/form-details/FieldLabel";
 
 type FormData = {
     _id: string;
@@ -49,7 +46,7 @@ type FormData = {
 };
 
 export default function FormDetailPage() {
-    const params = useParams()
+    const params = useParams();
     const router = useRouter();
     const { id } = params;
 
@@ -57,340 +54,177 @@ export default function FormDetailPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchFormDetail = async () => {
+    const fetchData = async () => {
         try {
             setLoading(true);
             setError(null);
+
             const res = await axios.get(`/api/form/${id}`);
             setData(res.data.data);
-        } catch (err: unknown) {
-            handleApiError(err)
+        } catch (err: any) {
+            handleAxiosError(err);
+
+            const error = err.response?.data?.message
+            setError(error)
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchFormDetail();
+        fetchData();
     }, [id]);
 
-    const handleBack = () => {
-        router.back();
-    };
+    const goBack = () => router.back();
 
-    // Loading State
-    if (loading) {
-        return (
-            <div className="container max-w-4xl py-8">
-                <Card>
-                    <CardHeader className="pb-4">
-                        <div className="flex items-center gap-4">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={handleBack}
-                                className="h-8 w-8 p-0"
-                            >
-                                <ArrowLeft className="h-4 w-4" />
-                            </Button>
-                            <div>
-                                <Skeleton className="h-8 w-64" />
-                                <Skeleton className="h-4 w-48 mt-2" />
-                            </div>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        {Array.from({ length: 8 }).map((_, index) => (
-                            <div key={index} className="space-y-2">
-                                <Skeleton className="h-4 w-32" />
-                                <Skeleton className="h-5 w-full max-w-96" />
-                            </div>
-                        ))}
-                    </CardContent>
-                </Card>
-            </div>
-        );
-    }
-
-    // Error State
-    if (error) {
-        return (
-            <div className="container max-w-4xl py-8">
-                <Alert variant="destructive">
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription className="flex items-center justify-between">
-                        <span>{error}</span>
-                        <div className="flex gap-2">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={handleBack}
-                            >
-                                <ArrowLeft className="h-4 w-4 mr-2" />
-                                Back
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={fetchFormDetail}
-                            >
-                                <RefreshCw className="h-4 w-4 mr-2" />
-                                Retry
-                            </Button>
-                        </div>
-                    </AlertDescription>
-                </Alert>
-            </div>
-        );
-    }
-
-    // Empty State
-    if (!data) {
-        return (
-            <div className="container max-w-4xl py-8">
-                <Alert>
-                    <AlertTitle>No data found</AlertTitle>
-                    <AlertDescription className="flex items-center justify-between">
-                        <span>No form data found for the specified ID.</span>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={handleBack}
-                        >
-                            <ArrowLeft className="h-4 w-4 mr-2" />
-                            Back
-                        </Button>
-                    </AlertDescription>
-                </Alert>
-            </div>
-        );
-    }
+    if (loading) return <LoadingState onBack={goBack} />;
+    if (error) return <ErrorState message={error} onBack={goBack} onRetry={fetchData} />;
+    if (!data) return <EmptyState onBack={goBack} />;
 
     return (
         <div className="container max-w-4xl py-8">
-            <Card>
-                <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0 pb-4">
-                    {/* Left side */}
-                    <div className="flex items-center gap-4 flex-wrap">
-                        {/* Back button */}
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={handleBack}
-                            className="h-8 w-8 p-0"
-                        >
-                            <ArrowLeft className="h-4 w-4" />
-                            <span className="sr-only">Back</span>
-                        </Button>
+            {/* Back button */}
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={goBack}
+                className="h-8 w-8 p-0 mb-4"
+            >
+                <ArrowLeft className="h-4 w-4" />
+            </Button>
 
-                        {/* Title + ID */}
-                        <div className="min-w-0">
-                            <CardTitle className="text-lg sm:text-xl md:text-2xl font-bold break-words">
-                                Student Form Detail
-                            </CardTitle>
+            <FormDetailCard onRefresh={fetchData} id={data._id}>
+                {/* PERSONAL INFO */}
+                <FormDetailSection title="Personal Information">
+                    <DetailField
+                        icon={<User className="h-4 w-4" />}
+                        label="Full Name"
+                        value={data.fullName}
+                    />
+                    <DetailField
+                        icon={<Mail className="h-4 w-4" />}
+                        label="Email"
+                        value={data.email}
+                    />
+                    <DetailField
+                        icon={<Phone className="h-4 w-4" />}
+                        label="Phone"
+                        value={data.phone}
+                    />
+                </FormDetailSection>
 
-                            <CardDescription className="text-sm text-muted-foreground truncate sm:truncate-none">
-                                ID: {data._id.slice(0, 6)}...
-                            </CardDescription>
+                <Separator />
+
+                {/* ACADEMIC INFO */}
+                <FormDetailSection title="Academic Information">
+                    <DetailField
+                        icon={<School className="h-4 w-4" />}
+                        label="Semester"
+                        value={data.semester}
+                    />
+                    <DetailField
+                        icon={<Hash className="h-4 w-4" />}
+                        label="Roll Number"
+                        value={data.rollNumber}
+                    />
+                </FormDetailSection>
+
+                <Separator />
+
+                {/* CAREER & SKILLS */}
+                <FormDetailSection title="Career & Skills">
+                    <DetailField
+                        icon={<Target className="h-4 w-4" />}
+                        label="Career Goal"
+                        value={data.careerGoal}
+                        multiline
+                    />
+
+                    <div className="space-y-2">
+                        <FieldLabel icon={<Code className="h-4 w-4" />} label="Skills" />
+                        <div className="flex flex-wrap gap-2">
+                            {data.skills.length > 0 ? (
+                                data.skills.map((skill, index) => (
+                                    <Badge variant="outline" key={index}>
+                                        {skill}
+                                    </Badge>
+                                ))
+                            ) : (
+                                <span className="text-sm text-muted-foreground">
+                                    No skills specified
+                                </span>
+                            )}
                         </div>
+                    </div>
+                </FormDetailSection>
 
+                <Separator />
+
+                {/* EVENTS */}
+                <FormDetailSection title="Events & Activities">
+                    <div className="space-y-2">
+                        <FieldLabel
+                            icon={<Calendar className="h-4 w-4" />}
+                            label="Events Interested In"
+                        />
+
+                        <div className="flex flex-wrap gap-2">
+                            {data.events.length > 0 ? (
+                                data.events.map((event, i) => (
+                                    <Badge variant="secondary" key={i}>
+                                        {event}
+                                    </Badge>
+                                ))
+                            ) : (
+                                <span className="text-sm text-muted-foreground">
+                                    No events selected
+                                </span>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Right side: Refresh button */}
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={fetchFormDetail}
-                        className="h-8 w-8 p-0"
-                    >
-                        <RefreshCw className="h-4 w-4" />
-                        <span className="sr-only">Refresh</span>
-                    </Button>
-                </CardHeader>
+                    <DetailField
+                        icon={<Lightbulb className="h-4 w-4" />}
+                        label="Suggestions"
+                        value={data.suggestions || "No suggestions provided"}
+                        multiline
+                    />
+                </FormDetailSection>
 
+                <Separator />
 
-                <CardContent className="space-y-6">
-                    {/* Personal Information Section */}
-                    <Section title="Personal Information">
-                        <DetailField
-                            icon={<User className="h-4 w-4" />}
-                            label="Full Name"
-                            value={data.fullName}
-                        />
-                        <DetailField
-                            icon={<Mail className="h-4 w-4" />}
-                            label="Email"
-                            value={data.email}
-                        />
-                        <DetailField
-                            icon={<Phone className="h-4 w-4" />}
-                            label="Phone"
-                            value={data.phone}
-                        />
-                    </Section>
+                {/* SYSTEM INFO */}
+                <FormDetailSection title="System Information">
+                    <DetailField
+                        icon={<MessageSquare className="h-4 w-4" />}
+                        label="Contact Status"
+                        value={
+                            <Badge
+                                variant={data.contacted ? "default" : "secondary"}
+                                className={
+                                    data.contacted
+                                        ? "bg-green-100 text-green-800 hover:bg-green-100"
+                                        : ""
+                                }
+                            >
+                                {data.contacted ? "Contacted" : "Not Contacted"}
+                            </Badge>
+                        }
+                    />
 
-                    <Separator />
+                    <DetailField
+                        icon={<Globe className="h-4 w-4" />}
+                        label="Source IP"
+                        value={data.sourceIP}
+                    />
 
-                    {/* Academic Information Section */}
-                    <Section title="Academic Information">
-                        <DetailField
-                            icon={<School className="h-4 w-4" />}
-                            label="Semester"
-                            value={data.semester}
-                        />
-                        <DetailField
-                            icon={<Hash className="h-4 w-4" />}
-                            label="Roll Number"
-                            value={data.rollNumber}
-                        />
-                    </Section>
-
-                    <Separator />
-
-                    {/* Career & Skills Section */}
-                    <Section title="Career & Skills">
-                        <DetailField
-                            icon={<Target className="h-4 w-4" />}
-                            label="Career Goal"
-                            value={data.careerGoal}
-                            multiline
-                        />
-
-                        <div className="space-y-2">
-                            <FieldLabel icon={<Code className="h-4 w-4" />} label="Skills" />
-                            <div className="flex flex-wrap gap-2">
-                                {data.skills.length > 0 ? (
-                                    data.skills.map((skill, index) => (
-                                        <Badge
-                                            key={index}
-                                            variant="outline"
-                                            className="px-2 py-1"
-                                        >
-                                            {skill}
-                                        </Badge>
-                                    ))
-                                ) : (
-                                    <span className="text-sm text-muted-foreground">
-                                        No skills specified
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-                    </Section>
-
-                    <Separator />
-
-                    {/* Events & Activities Section */}
-                    <Section title="Events & Activities">
-                        <div className="space-y-2">
-                            <FieldLabel icon={<Calendar className="h-4 w-4" />} label="Events Interested In" />
-                            <div className="flex flex-wrap gap-2">
-                                {data.events.length > 0 ? (
-                                    data.events.map((event, index) => (
-                                        <Badge
-                                            key={index}
-                                            variant="secondary"
-                                            className="px-2 py-1"
-                                        >
-                                            {event}
-                                        </Badge>
-                                    ))
-                                ) : (
-                                    <span className="text-sm text-muted-foreground">
-                                        No events selected
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-
-                        <DetailField
-                            icon={<Lightbulb className="h-4 w-4" />}
-                            label="Suggestions"
-                            value={data.suggestions || "No suggestions provided"}
-                            multiline
-                        />
-                    </Section>
-
-                    <Separator />
-
-                    {/* System Information Section */}
-                    <Section title="System Information">
-                        <DetailField
-                            icon={<MessageSquare className="h-4 w-4" />}
-                            label="Contact Status"
-                            value={
-                                <Badge
-                                    variant={data.contacted ? "default" : "secondary"}
-                                    className={data.contacted ? "bg-green-100 text-green-800 hover:bg-green-100" : ""}
-                                >
-                                    {data.contacted ? "Contacted" : "Not Contacted"}
-                                </Badge>
-                            }
-                        />
-                        <DetailField
-                            icon={<Globe className="h-4 w-4" />}
-                            label="Source IP"
-                            value={data.sourceIP}
-                        />
-                        <DetailField
-                            icon={<Calendar className="h-4 w-4" />}
-                            label="Submitted At"
-                            value={new Date(data.createdAt).toLocaleString()}
-                        />
-                    </Section>
-                </CardContent>
-            </Card>
-        </div>
-    );
-}
-
-// Section Component
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-    return (
-        <div className="space-y-4">
-            <h3 className="text-lg font-semibold">{title}</h3>
-            <div className="space-y-3">{children}</div>
-        </div>
-    );
-}
-
-// Detail Field Component
-function DetailField({
-    icon,
-    label,
-    value,
-    multiline = false,
-}: {
-    icon: React.ReactNode;
-    label: string;
-    value: React.ReactNode;
-    multiline?: boolean;
-}) {
-    return (
-        <div className="flex items-start gap-3">
-            <div className="mt-0.5 text-muted-foreground">
-                {icon}
-            </div>
-            <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-muted-foreground mb-1">
-                    {label}
-                </p>
-                <div className={`text-sm ${multiline ? "whitespace-pre-wrap break-words" : "break-words"}`}>
-                    {value}
-                </div>
-            </div>
-        </div>
-    );
-}
-
-// Field Label Component
-function FieldLabel({ icon, label }: { icon: React.ReactNode; label: string }) {
-    return (
-        <div className="flex items-center gap-2">
-            {icon}
-            <span className="text-sm font-medium text-muted-foreground">
-                {label}
-            </span>
+                    <DetailField
+                        icon={<Calendar className="h-4 w-4" />}
+                        label="Submitted At"
+                        value={new Date(data.createdAt).toLocaleString()}
+                    />
+                </FormDetailSection>
+            </FormDetailCard>
         </div>
     );
 }

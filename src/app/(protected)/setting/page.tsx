@@ -18,14 +18,9 @@ import { Separator } from '@/components/ui/separator';
 import DeleteAccountCard from '@/components/Common/DeleteAccountCard';
 import Profile from '@/components/protected/setting/Profile';
 import Password from '@/components/protected/setting/Password';
-
-// Form validation schema
-
-
-
+import { AppearanceSettings } from '@/components/protected/setting/AppearanceSettings';
 
 export default function SettingsPage() {
-  const [isSaved, setIsSaved] = useState(false);
 
 
 
@@ -53,10 +48,9 @@ export default function SettingsPage() {
         {/* Main Content */}
         <div className="flex-1 lg:max-w-2xl">
           <Tabs defaultValue="profile" className="space-y-6 ">
-            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 h-auto">
+            <TabsList className="grid w-auto  grid-cols-2 lg:grid-cols-4 h-auto">
               <TabsTrigger value="profile">Profile</TabsTrigger>
               <TabsTrigger value="password">Password</TabsTrigger>
-              <TabsTrigger value="two-factor">Two-Factor</TabsTrigger>
               <TabsTrigger value="appearance">Appearance</TabsTrigger>
             </TabsList>
 
@@ -68,36 +62,8 @@ export default function SettingsPage() {
               <Password />
             </TabsContent>
 
-            <TabsContent value="two-factor">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Two-Factor Authentication</CardTitle>
-                  <CardDescription>
-                    Add an extra layer of security to your account
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Two-factor authentication setup would go here.
-                  </p>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
             <TabsContent value="appearance">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Appearance</CardTitle>
-                  <CardDescription>
-                    Customize the appearance of the application
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Appearance customization options would go here.
-                  </p>
-                </CardContent>
-              </Card>
+              <AppearanceSettings />
             </TabsContent>
           </Tabs>
 
