@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const MONGODBURI = process.env.MONGODBURI as string;
+const MONGODBURI = process.env.MONGO_URI as string;
 
 const dbConnect = async () => {
   if (mongoose.connection.readyState === 1) {

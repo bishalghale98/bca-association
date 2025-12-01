@@ -18,12 +18,15 @@ export const LoginSchema = z.object({
   password: z.string(),
 });
 
-export const ChangePassword = z.object({
-  currentPassword: z
-    .string()
-    .min(6, "Current password must be at least 6 characters"),
-  newPassword: z.string().min(6, "New password must be at least 6 characters"),
-});
+export const passwordFormSchema = z.object({
+    current_password: z.string().min(1, 'Current password is required'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    password_confirmation: z.string().min(1, 'Please confirm your password'),
+}).refine((data) => data.password === data.password_confirmation, {
+    message: "Passwords don't match",
+    path: ["password_confirmation"],
+})
+
 
 export const ForgotPasswordSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),

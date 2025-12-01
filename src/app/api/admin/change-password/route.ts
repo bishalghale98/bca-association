@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/dbConnect";
 import { validateSchema } from "@/lib/helper/validateSchema";
 import User from "@/models/User";
-import { ChangePassword } from "@/schemas/UserSchema";
+import { passwordFormSchema } from "@/schemas/UserSchema";
 import bcrypt from "bcryptjs";
 import { sendMail } from "../../../../../sendMail/sendMail";
 import { getSessionUser } from "@/lib/auth/getSessionUser";
@@ -22,19 +22,19 @@ export async function PUT(req: Request) {
     }
 
     const body = await req.json();
-    const validation = validateSchema(ChangePassword, body);
+    const validation = validateSchema(passwordFormSchema, body);
     if (!validation.success) {
       return apiError("Validation failed", 400, validation.errors);
     }
 
-    const { currentPassword, newPassword } = validation.data!;
+    const { current_password, password } = validation.data!;
 
-    const isMatch = await bcrypt.compare(currentPassword, reqUser.password);
+    const isMatch = await bcrypt.compare(current_password, reqUser.password);
     if (!isMatch) {
       return apiError("Current password is incorrect", 401);
     }
 
-    reqUser.password = await bcrypt.hash(newPassword, 10);
+    reqUser.password = await bcrypt.hash(password, 10);
     await reqUser.save();
 
     await sendMail({

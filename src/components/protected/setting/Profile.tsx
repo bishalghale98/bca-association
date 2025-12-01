@@ -29,7 +29,6 @@ const Profile = () => {
     });
 
     const handleSubmit = async (data: z.infer<typeof UpdateProfileFormSchema>) => {
-        setIsSaved(true);
 
         try {
             const result = await api.post('/admin/update-profile', data);
@@ -38,6 +37,8 @@ const Profile = () => {
             toast.success("Success", {
                 description: res.message
             });
+            setIsSaved(true);
+
         } catch (error: unknown) {
             handleAxiosError(error)
         }
@@ -85,21 +86,28 @@ const Profile = () => {
                                     <FormControl>
                                         <Input type="email" placeholder="Email address" {...field} />
                                     </FormControl>
-                                    <FormDescription>We'll never share your email with anyone else.</FormDescription>
+                                    <FormDescription>We&apos;ll never share your email with anyone else.</FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
 
                         {/* Submit + success badge */}
-                        <div className="flex items-center gap-4">
-                            <Button type="submit">Save changes</Button>
+                        <div className="grid gap-2 sm:gap-4 sm:auto-flow-col sm:justify-start items-center">
+                            <Button type="submit" className="w-full sm:w-auto">
+                                Save changes
+                            </Button>
+
                             {isSaved && (
-                                <Badge variant="secondary" className="bg-green-50 text-green-700">
+                                <Badge
+                                    variant="secondary"
+                                    className="bg-green-50 text-green-700 w-full sm:w-auto text-center"
+                                >
                                     Changes saved successfully!
                                 </Badge>
                             )}
                         </div>
+
                     </form>
                 </Form>
             </CardContent>

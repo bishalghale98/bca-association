@@ -17,6 +17,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import DeleteAccountCard from '@/components/Common/DeleteAccountCard';
 import Profile from '@/components/protected/setting/Profile';
+import Password from '@/components/protected/setting/Password';
 
 // Form validation schema
 
@@ -28,7 +29,7 @@ export default function SettingsPage() {
 
 
 
- 
+
   const handleDeleteAccount = () => {
     // Handle account deletion here
     console.log('Account deletion requested');
@@ -60,23 +61,11 @@ export default function SettingsPage() {
             </TabsList>
 
             <TabsContent value="profile" className="space-y-6">
-              <Profile/>
+              <Profile />
             </TabsContent>
 
             <TabsContent value="password">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Password</CardTitle>
-                  <CardDescription>
-                    Change your password here
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Password management functionality would go here.
-                  </p>
-                </CardContent>
-              </Card>
+              <Password />
             </TabsContent>
 
             <TabsContent value="two-factor">

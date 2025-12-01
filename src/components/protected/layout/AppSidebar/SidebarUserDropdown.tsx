@@ -81,7 +81,7 @@ export function SidebarUserDropdown({ name, email, role, isCollapsed }: Props) {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem
-                    onClick={() => (router.push("setting"))}
+                    onClick={() => (router.push("/setting"))}
                     className="cursor-pointer"
                 >
                     <Settings className="h-4 w-4 mr-2" />

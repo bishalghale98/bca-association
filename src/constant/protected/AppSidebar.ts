@@ -1,11 +1,6 @@
 import {
   LayoutGrid,
   Users,
-  Calendar,
-  FileText,
-  Settings,
-  Github,
-  BookOpen,
 } from "lucide-react";
 
 export const mainItems = [
