@@ -1,5 +1,4 @@
 import StudentForm from "@/models/StudentForm";
-import { NextResponse } from "next/server";
 import { ROLE } from "@/types/User";
 import { checkRole } from "@/lib/auth/checkRole";
 import { apiError, apiSuccess } from "@/lib/helper/apiResponse";

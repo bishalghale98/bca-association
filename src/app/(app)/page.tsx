@@ -4,7 +4,7 @@ import features from '@/features.json'
 
 const Home = () => {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="min-h-screen bg-linear-to-br from-slate-50 to-blue-50">
 
 
 
@@ -19,7 +19,7 @@ const Home = () => {
 
                     <h1 className="text-5xl md:text-6xl font-bold text-slate-900 mb-6 tracking-tight">
                         BCA Student
-                        <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        <span className="block bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                             Association Portal
                         </span>
                     </h1>
@@ -88,7 +88,7 @@ const Home = () => {
 
             {/* CTA Section */}
             <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 shadow-2xl shadow-blue-500/25">
+                <div className="bg-linear-to-r from-blue-600 to-purple-600 rounded-3xl p-12 shadow-2xl shadow-blue-500/25">
                     <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
                         Ready to Share Your Voice?
                     </h2>

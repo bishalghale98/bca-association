@@ -31,6 +31,7 @@ import { ApiResponse } from "@/types/ApiResponse";
 import careerGoals from "@/careerGoals.json";
 import semesters from "@/semesters.json";
 import { Loader2, User, GraduationCap, Target, MessageSquare } from "lucide-react";
+import { handleAxiosError } from "@/lib/helper/errorHandler";
 
 const skillsOptions = [
   "React",
@@ -95,10 +96,7 @@ export default function StudentRegistrationForm() {
 
       form.reset();
     } catch (error) {
-      console.error("Error submitting form:", error);
-      toast.error("Registration Failed", {
-        description: "Error submitting form. Please try again.",
-      });
+      handleAxiosError(error)
     } finally {
       setIsSubmitting(false);
     }

@@ -30,6 +30,7 @@ import {
     ArrowLeft
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { handleApiError } from "@/lib/helper/apiError";
 
 type FormData = {
     _id: string;
@@ -62,8 +63,8 @@ export default function FormDetailPage() {
             setError(null);
             const res = await axios.get(`/api/form/${id}`);
             setData(res.data.data);
-        } catch (err: any) {
-            setError(err.response?.data?.message || err.message || "Failed to load form");
+        } catch (err: unknown) {
+            handleApiError(err)
         } finally {
             setLoading(false);
         }
