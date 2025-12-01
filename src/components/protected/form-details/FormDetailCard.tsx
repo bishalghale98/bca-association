@@ -23,7 +23,7 @@ export default function FormDetailCard({
         <Card>
             <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0 pb-4">
                 <div className="min-w-0">
-                    <CardTitle className="text-lg sm:text-xl md:text-2xl font-bold break-words">
+                    <CardTitle className="text-lg sm:text-xl md:text-2xl font-bold wrap-break-word">
                         Student Form Detail
                     </CardTitle>
 

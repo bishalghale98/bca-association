@@ -19,7 +19,7 @@ export default function DetailField({
                     {label}
                 </p>
                 <div
-                    className={`text-sm ${multiline ? "whitespace-pre-wrap break-words" : "break-words"
+                    className={`text-sm ${multiline ? "whitespace-pre-wrap wrap-break-word" : "wrap-break-word"
                         }`}
                 >
                     {value}
