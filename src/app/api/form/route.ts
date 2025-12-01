@@ -9,6 +9,7 @@ import { studentFormEmailTemplate } from "@/lib/emailTemplates/studentFormEmail"
 import { rateLimit } from "@/lib/rateLimit";
 import { checkRole } from "@/lib/auth/checkRole";
 import { ROLE } from "@/types/User";
+import { handleApiError } from "@/lib/helper/apiError";
 
 // get all form route
 export async function GET(req: Request) {
@@ -22,7 +23,6 @@ export async function GET(req: Request) {
 
     await dbConnect();
 
-    // 2️⃣ Get query params for pagination
     const url = new URL(req.url);
     const page = parseInt(url.searchParams.get("page") || "1", 10); // default page 1
     const limit = parseInt(url.searchParams.get("limit") || "10", 10); // default 10 items per page
@@ -52,16 +52,8 @@ export async function GET(req: Request) {
       },
       { status: 200 }
     );
-  } catch (error) {
-    console.error("GET /api/form error:", error);
-
-    return NextResponse.json<ApiResponse>(
-      {
-        success: false,
-        message: "Failed to fetch form data",
-      },
-      { status: 500 }
-    );
+  } catch (error: unknown) {
+    handleApiError(error);
   }
 }
 

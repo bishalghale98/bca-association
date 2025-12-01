@@ -1,13 +1,13 @@
-import { NextResponse } from "next/server";
 import User from "@/models/User";
 import ResetToken from "@/models/ResetToken";
 import { generateResetToken } from "@/lib/token";
 import dbConnect from "@/lib/dbConnect";
 import { sendMail } from "../../../../../sendMail/sendMail";
 import { ForgotPasswordSchema } from "@/schemas/UserSchema";
-import { ApiResponse } from "@/types/ApiResponse";
 import { validateSchema } from "@/lib/helper/validateSchema";
 import { resetPasswordEmailTemplate } from "@/lib/emailTemplates/resetPasswordEmail";
+import { apiError, apiSuccess } from "@/lib/helper/apiResponse";
+import { handleApiError } from "@/lib/helper/apiError";
 
 export async function POST(req: Request) {
   await dbConnect();
@@ -17,20 +17,13 @@ export async function POST(req: Request) {
 
     const validation = validateSchema(ForgotPasswordSchema, body);
     if (!validation.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Validation failed",
-          errors: validation.errors,
-        },
-        { status: 400 }
-      );
+      return apiError("Validation failed", 400, validation.errors);
     }
     const { email } = validation.data!;
 
     const user = await User.findOne({ email });
     if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+      return apiError("User not found", 404);
     }
 
     const token = generateResetToken();
@@ -49,9 +42,8 @@ export async function POST(req: Request) {
       html: resetPasswordEmailTemplate(resetLink),
     });
 
-    return NextResponse.json({ message: "Reset link sent!" });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: "Server error" }, { status: 500 });
+    return apiSuccess("Reset link send!");
+  } catch (error: unknown) {
+    handleApiError(error);
   }
 }

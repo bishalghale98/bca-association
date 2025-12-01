@@ -11,10 +11,10 @@ import {
 	Eye,
 	MessageSquare,
 	Search,
-	Filter,
 	Phone,
 } from "lucide-react";
 import { ApiResponse } from "@/types/ApiResponse";
+import { handleAxiosError } from "@/lib/helper/errorHandler";
 
 type FormData = {
 	_id: string;
@@ -32,27 +32,21 @@ type FormData = {
 	createdAt: string;
 };
 
-// type ApiResponse = {
-// 	success: boolean;
-// 	message: string;
-// 	data: any;
-// 	meta?: Meta;
-// };
 
-// type Meta = {
-// 	page: number;
-// 	limit: number;
-// 	total: number;
-// 	totalPages: number;
-// };
-
+interface Meta {
+	page: number;
+	limit: number;
+	total: number;
+	totalPages: number;
+}
 
 export default function FormDataTablePage() {
 	const [formData, setFormData] = useState<FormData[]>([]);
+	const [formMeta, setFormMeta] = useState<Meta | null>(null);
+
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [searchTerm, setSearchTerm] = useState("");
-	const [filterContacted, setFilterContacted] = useState<"all" | "contacted" | "not-contacted">("all");
 	const [page, setPage] = useState(1);
 	const [limit] = useState(10); // Number of items per page
 	const [hasMore, setHasMore] = useState(true);
@@ -71,8 +65,12 @@ export default function FormDataTablePage() {
 				const res = await axios.get<ApiResponse>(
 					`/api/form?page=${nextPage}&limit=${limit}`
 				);
-
+				if (res.data.success && res.data?.meta) {
+					setFormMeta(res.data.meta);
+				}
 				const newData = res.data.data;
+
+
 
 				setFormData(prev =>
 					nextPage === 1 ? newData : [...prev, ...newData]
@@ -81,8 +79,8 @@ export default function FormDataTablePage() {
 				const { meta } = res.data;
 				setHasMore(meta ? nextPage < meta.totalPages : false);
 
-			} catch (err: any) {
-				setError(err?.message ?? "Failed to fetch data");
+			} catch (err: unknown) {
+				handleAxiosError(err)
 			} finally {
 				setLoading(false);
 			}
@@ -156,7 +154,7 @@ export default function FormDataTablePage() {
 						Form Submissions
 					</h1>
 					<p className="text-gray-600 dark:text-gray-400 text-sm">
-						{filteredData.length} of {formData.length} submission{formData.length !== 1 ? 's' : ''}
+						{filteredData.length} of {formMeta?.total} submission{formData.length !== 1 ? 's' : ''}
 					</p>
 				</div>
 
@@ -290,7 +288,6 @@ export default function FormDataTablePage() {
 									<button
 										onClick={() => {
 											setSearchTerm("");
-											setFilterContacted("all");
 										}}
 										className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
 									>
