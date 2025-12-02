@@ -28,24 +28,65 @@ export function AppearanceSettings() {
                                 console.log("Selected theme:", val)
                                 setTheme(val)
                             }}
-                            className="w-full"
+                            className="w-full "
                         >
-                            <TabsList className="inline-flex h-10 gap-1 rounded-lg bg-neutral-100 p-1 dark:bg-neutral-800">
-                                <TabsTrigger value="light" className="flex items-center rounded-md px-3.5 py-1.5">
-                                    <SunIcon className="-ml-1 h-4 w-4" />
-                                    <span className="ml-1.5 text-sm">Light</span>
+                            <TabsList
+                                className="
+    flex items-center gap-2
+    sm:gap-1
+    p-1
+    rounded-lg
+    bg-neutral-100 dark:bg-neutral-800
+    w-full sm:w-auto
+  "
+                            >
+                                <TabsTrigger
+                                    value="light"
+                                    className="
+      flex items-center justify-center gap-2
+      px-3 py-2 rounded-md
+      transition
+      data-[state=active]:bg-white dark:data-[state=active]:bg-neutral-700
+      data-[state=active]:text-foreground
+      hover:bg-white/60 dark:hover:bg-neutral-700/60
+    "
+                                >
+                                    <SunIcon className="h-4 w-4" />
+                                    <span className="hidden sm:inline text-sm">Light</span>
                                 </TabsTrigger>
 
-                                <TabsTrigger value="dark" className="flex items-center rounded-md px-3.5 py-1.5">
-                                    <MoonIcon className="-ml-1 h-4 w-4" />
-                                    <span className="ml-1.5 text-sm">Dark</span>
+                                <TabsTrigger
+                                    value="dark"
+                                    className="
+      flex items-center justify-center gap-2
+      px-3 py-2 rounded-md
+      transition
+      data-[state=active]:bg-white dark:data-[state=active]:bg-neutral-700
+      data-[state=active]:text-foreground
+      hover:bg-white/60 dark:hover:bg-neutral-700/60
+    "
+                                >
+                                    <MoonIcon className="h-4 w-4" />
+                                    <span className="hidden sm:inline text-sm">Dark</span>
                                 </TabsTrigger>
 
-                                <TabsTrigger value="system" className="flex items-center rounded-md px-3.5 py-1.5">
-                                    <MonitorIcon className="-ml-1 h-4 w-4" />
-                                    <span className="ml-1.5 text-sm">System</span>
+                                <TabsTrigger
+                                    value="system"
+                                    className="
+      flex items-center justify-center gap-2
+      px-3 py-2 rounded-md
+      transition
+      data-[state=active]:bg-white dark:data-[state=active]:bg-neutral-700
+      data-[state=active]:text-foreground
+      hover:bg-white/60 dark:hover:bg-neutral-700/60
+    "
+                                >
+                                    <MonitorIcon className="h-4 w-4" />
+                                    <span className="hidden sm:inline text-sm">System</span>
                                 </TabsTrigger>
                             </TabsList>
+
+
                         </Tabs>
                     </div>
                 </div>

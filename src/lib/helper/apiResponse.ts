@@ -19,8 +19,10 @@ export function apiSuccess(
 export function apiError(
   message: string,
   status = 400 as number,
-  error: unknown = null
+  error: unknown = null,
+  errorAbout?: string
 ) {
+  console.error(`${errorAbout}: ${error}`);
   return NextResponse.json<ApiResponse>(
     {
       success: false,

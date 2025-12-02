@@ -10,6 +10,7 @@ import { rateLimit } from "@/lib/rateLimit";
 import { checkRole } from "@/lib/auth/checkRole";
 import { ROLE } from "@/types/User";
 import { handleApiError } from "@/lib/helper/apiError";
+import { apiError, apiSuccess } from "@/lib/helper/apiResponse";
 
 // get all form route
 export async function GET(req: Request) {
@@ -57,15 +58,11 @@ export async function GET(req: Request) {
   }
 }
 
-// Post route
 export async function POST(req: NextRequest) {
   try {
-    const headers = rateLimit.checkNext(req, 10); // 10 requests per minute per IP
+    const headers = rateLimit.checkNext(req, 10); 
     if (headers.get("x-ratelimit-remaining") === "0") {
-      return NextResponse.json(
-        { success: false, message: "Too many requests. Try again later." },
-        { status: 429, headers }
-      );
+      return apiError("Too many requests. Try again later.", 429);
     }
 
     await dbConnect();
@@ -74,14 +71,7 @@ export async function POST(req: NextRequest) {
 
     const validation = validateSchema(formSchema, body);
     if (!validation.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Validation failed",
-          errors: validation.errors,
-        },
-        { status: 400 }
-      );
+      return apiError("Validation failed", 400, validation.errors);
     }
 
     const data = validation.data!;
@@ -96,18 +86,8 @@ export async function POST(req: NextRequest) {
       subject: "Thank you for submitting your Student Form",
       html: studentFormEmailTemplate(saved),
     });
-    return NextResponse.json(
-      {
-        success: true,
-        message: "Form submitted successfully",
-      },
-      { status: 201 }
-    );
+    return apiSuccess("Form submitted successfully");
   } catch (error) {
-    console.error("Server error:", error);
-    return NextResponse.json(
-      { success: false, message: "Server error" },
-      { status: 500 }
-    );
+    return handleApiError(error);
   }
 }

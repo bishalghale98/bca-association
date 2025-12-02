@@ -13,6 +13,7 @@ import { signIn } from 'next-auth/react'
 import { toast } from 'sonner'
 import z from 'zod'
 import { useRouter } from 'next/navigation'
+import { handleAxiosError } from '@/lib/helper/errorHandler'
 
 const SignInForm = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -36,8 +37,8 @@ const SignInForm = () => {
             }
 
             router.push('/dashboard')
-        } catch (error) {
-            toast.error('Something went wrong. Please try again.')
+        } catch (error: unknown) {
+            handleAxiosError(error)
         } finally {
             setIsLoading(false)
         }
