@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Card,
     CardContent,
@@ -40,6 +40,10 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { api } from '@/lib/api';
+import { ApiResponse } from '@/types/ApiResponse';
+import { handleAxiosError } from '@/lib/helper/errorHandler';
+import { toast } from 'sonner';
+import { usePathname } from 'next/navigation';
 
 // Mock data based on your schema
 const mockUsers = [
@@ -61,9 +65,33 @@ const roleColors: Record<string, string> = {
 const UserManagementPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedRole, setSelectedRole] = useState<string>('all');
+    const [users, setUsers] = useState<[]>()
+    const pathname = usePathname()
+
+
+    const fetchUser = async () => {
+        try {
+            const result = await api.get("/user-management")
+            const res: ApiResponse = result.data
+            toast.success("Success", {
+                description: res.message
+            })
+            setUsers(res.data)
+        } catch (error) {
+            handleAxiosError(error)
+        }
+
+
+    }
+
+
+    useEffect(() => {
+        fetchUser()
+    }, [pathname, searchTerm, selectedRole]);
+
 
     // Filter users based on search and role
-    const filteredUsers = mockUsers.filter(user => {
+    const filteredUsers = users?.filter(user => {
         const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.email.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesRole = selectedRole === 'all' || user.role === selectedRole;
